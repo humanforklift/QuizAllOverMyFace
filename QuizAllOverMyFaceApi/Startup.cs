@@ -26,6 +26,23 @@ namespace QuizAllOverMyFaceApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            // Register Swagger services
+            services.AddSwaggerDocument();
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+
+                    //builder.WithOrigins("https://sensetooo.z26.web.core.windows.net")
+                    //.AllowAnyMethod()
+                    //.AllowAnyHeader();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,10 +59,15 @@ namespace QuizAllOverMyFaceApi
 
             app.UseAuthorization();
 
+            app.UseCors();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
         }
     }
 }
