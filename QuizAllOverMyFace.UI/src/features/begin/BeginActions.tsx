@@ -7,7 +7,7 @@ import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import CardHeader from "@material-ui/core/CardHeader";
 import { Typography, Link as MaterialUiLink, Grid } from "@material-ui/core";
-import { BeginActionsStore } from "./BeginActionsStore";
+import { BeginActionsStore, BeginActionsStoreContext } from "./BeginActionsStore";
 import { observer, useLocalStore } from "mobx-react-lite";
 import { GlobalStoreContext } from "features/shared/stores/GlobalStore";
 import { useHistory } from "react-router-dom";
@@ -85,29 +85,22 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Login = () => {
+const Begin = () => {
   const classes = useStyles();
   const history = useHistory();
   const globalStore = useContext(GlobalStoreContext);
-  const forgotPasswordStore = useLocalStore(
-    (source) => new ForgotPasswordStore(source.globalStore),
-    {
-      globalStore,
-    }
-  );
+  // const forgotPasswordStore = useLocalStore(
+  //   (source) => new BeginActionsStore(source.globalStore),
+  //   {
+  //     globalStore,
+  //   }
+  // );
   const store = useLocalStore((source) => new BeginActionsStore(source.globalStore), {
     globalStore,
   });
 
-  const handleKeyPress = (e: any) => {
-    if (e.keyCode === 13 || e.which === 13) {
-      store.isButtonDisabled || store.submitLoginForm();
-    }
-  };
-
   return (
     <div className={classes.bg}>
-      <ForgotPasswordStoreContext.Provider value={forgotPasswordStore}>
         <form className={classes.container} noValidate autoComplete="off">
           <Card className={classes.card}>
             <CardHeader className={classes.header} title="Riddle Me This" />
@@ -130,18 +123,16 @@ const Login = () => {
                 variant="contained"
                 size="large"
                 className={classes.loginBtn}
-                onClick={store.submitLoginForm}
-                //disabled={store.isButtonDisabled}
+                onClick={() => history.push("/begin-quiz")}
+                //disabled={store.isStartQuizDisabled}
               >
                 Start New Quiz
               </Button>
             </CardActions>
           </Card>
         </form>
-        <ForgotPassword />
-      </ForgotPasswordStoreContext.Provider>
     </div>
   );
 };
 
-export default observer(Login);
+export default observer(Begin);

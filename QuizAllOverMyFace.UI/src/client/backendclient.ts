@@ -17,8 +17,316 @@ export class QuizClient {
         this.baseUrl = baseUrl ? baseUrl : "https://localhost:44368";
     }
 
+    healthCheck(): Promise<string> {
+        let url_ = this.baseUrl + "/api/Quiz/HealthCheck";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processHealthCheck(_response);
+        });
+    }
+
+    protected processHealthCheck(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(<any>null);
+    }
+
+    getExistingQuiz(quizName: string): Promise<Quiz> {
+        let url_ = this.baseUrl + "/api/Quiz/GetExistingQuiz";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(quizName);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetExistingQuiz(_response);
+        });
+    }
+
+    protected processGetExistingQuiz(response: Response): Promise<Quiz> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Quiz.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Quiz>(<any>null);
+    }
+
+    createQuiz(viewModel: QuizViewModel): Promise<Quiz> {
+        let url_ = this.baseUrl + "/api/Quiz/CreateQuiz";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(viewModel);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateQuiz(_response);
+        });
+    }
+
+    protected processCreateQuiz(response: Response): Promise<Quiz> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Quiz.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Quiz>(<any>null);
+    }
+
+    validateQuizGuid(guid: string): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/Quiz/ValidateGuid";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(guid);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processValidateQuizGuid(_response);
+        });
+    }
+
+    protected processValidateQuizGuid(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(<any>null);
+    }
+
+    delete(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/Quiz/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDelete(_response);
+        });
+    }
+
+    protected processDelete(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+
+    nonsense(): Promise<InviteTeamViewModel> {
+        let url_ = this.baseUrl + "/api/Quiz/Nonsense";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processNonsense(_response);
+        });
+    }
+
+    protected processNonsense(response: Response): Promise<InviteTeamViewModel> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = InviteTeamViewModel.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<InviteTeamViewModel>(<any>null);
+    }
+}
+
+export class QuizHostClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl ? baseUrl : "https://localhost:44368";
+    }
+
+    getOrCreateQuizHost(hostName: string): Promise<QuizHost> {
+        let url_ = this.baseUrl + "/api/QuizHost/GetOrCreateHost";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(hostName);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetOrCreateQuizHost(_response);
+        });
+    }
+
+    protected processGetOrCreateQuizHost(response: Response): Promise<QuizHost> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = QuizHost.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<QuizHost>(<any>null);
+    }
+
+    delete(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/QuizHost/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDelete(_response);
+        });
+    }
+
+    protected processDelete(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+}
+
+export class RoundClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl ? baseUrl : "https://localhost:44368";
+    }
+
     getAll(): Promise<string[]> {
-        let url_ = this.baseUrl + "/api/Quiz";
+        let url_ = this.baseUrl + "/api/Round";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -55,8 +363,42 @@ export class QuizClient {
         return Promise.resolve<string[]>(<any>null);
     }
 
+    post(value: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/Round";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(value);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPost(_response);
+        });
+    }
+
+    protected processPost(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+
     get(id: number): Promise<string> {
-        let url_ = this.baseUrl + "/api/Quiz/{id}";
+        let url_ = this.baseUrl + "/api/Round/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
@@ -93,7 +435,7 @@ export class QuizClient {
     }
 
     put(id: number, value: string): Promise<void> {
-        let url_ = this.baseUrl + "/api/Quiz/{id}";
+        let url_ = this.baseUrl + "/api/Round/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
@@ -130,7 +472,7 @@ export class QuizClient {
     }
 
     delete(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/Quiz/{id}";
+        let url_ = this.baseUrl + "/api/Round/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
@@ -161,98 +503,17 @@ export class QuizClient {
         }
         return Promise.resolve<void>(<any>null);
     }
-
-    post(): Promise<string> {
-        let url_ = this.baseUrl + "/api/Quiz/StartNew";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <RequestInit>{
-            method: "POST",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPost(_response);
-        });
-    }
-
-    protected processPost(response: Response): Promise<string> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<string>(<any>null);
-    }
 }
 
-export class WeatherForecastClient {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+export class Quiz implements IQuiz {
+    id!: string;
+    hostId!: number;
+    name?: string | undefined;
+    numberOfRounds!: number;
+    rounds?: Round[] | undefined;
+    teams?: QuizTeam[] | undefined;
 
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        this.http = http ? http : <any>window;
-        this.baseUrl = baseUrl ? baseUrl : "https://localhost:44368";
-    }
-
-    get(): Promise<WeatherForecast[]> {
-        let url_ = this.baseUrl + "/WeatherForecast";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <RequestInit>{
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGet(_response);
-        });
-    }
-
-    protected processGet(response: Response): Promise<WeatherForecast[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(WeatherForecast.fromJS(item));
-            }
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<WeatherForecast[]>(<any>null);
-    }
-}
-
-export class WeatherForecast implements IWeatherForecast {
-    date!: Date;
-    temperatureC!: number;
-    temperatureF!: number;
-    summary?: string | undefined;
-
-    constructor(data?: IWeatherForecast) {
+    constructor(data?: IQuiz) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -263,35 +524,345 @@ export class WeatherForecast implements IWeatherForecast {
 
     init(_data?: any) {
         if (_data) {
-            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
-            this.temperatureC = _data["temperatureC"];
-            this.temperatureF = _data["temperatureF"];
-            this.summary = _data["summary"];
+            this.id = _data["id"];
+            this.hostId = _data["hostId"];
+            this.name = _data["name"];
+            this.numberOfRounds = _data["numberOfRounds"];
+            if (Array.isArray(_data["rounds"])) {
+                this.rounds = [] as any;
+                for (let item of _data["rounds"])
+                    this.rounds!.push(Round.fromJS(item));
+            }
+            if (Array.isArray(_data["teams"])) {
+                this.teams = [] as any;
+                for (let item of _data["teams"])
+                    this.teams!.push(QuizTeam.fromJS(item));
+            }
         }
     }
 
-    static fromJS(data: any): WeatherForecast {
+    static fromJS(data: any): Quiz {
         data = typeof data === 'object' ? data : {};
-        let result = new WeatherForecast();
+        let result = new Quiz();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
-        data["temperatureC"] = this.temperatureC;
-        data["temperatureF"] = this.temperatureF;
-        data["summary"] = this.summary;
+        data["id"] = this.id;
+        data["hostId"] = this.hostId;
+        data["name"] = this.name;
+        data["numberOfRounds"] = this.numberOfRounds;
+        if (Array.isArray(this.rounds)) {
+            data["rounds"] = [];
+            for (let item of this.rounds)
+                data["rounds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.teams)) {
+            data["teams"] = [];
+            for (let item of this.teams)
+                data["teams"].push(item.toJSON());
+        }
         return data; 
     }
 }
 
-export interface IWeatherForecast {
-    date: Date;
-    temperatureC: number;
-    temperatureF: number;
-    summary?: string | undefined;
+export interface IQuiz {
+    id: string;
+    hostId: number;
+    name?: string | undefined;
+    numberOfRounds: number;
+    rounds?: Round[] | undefined;
+    teams?: QuizTeam[] | undefined;
+}
+
+export class Round implements IRound {
+    id!: number;
+    category?: string | undefined;
+    numberOfQuestions!: number;
+    questions?: Question[] | undefined;
+
+    constructor(data?: IRound) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.category = _data["category"];
+            this.numberOfQuestions = _data["numberOfQuestions"];
+            if (Array.isArray(_data["questions"])) {
+                this.questions = [] as any;
+                for (let item of _data["questions"])
+                    this.questions!.push(Question.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): Round {
+        data = typeof data === 'object' ? data : {};
+        let result = new Round();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["category"] = this.category;
+        data["numberOfQuestions"] = this.numberOfQuestions;
+        if (Array.isArray(this.questions)) {
+            data["questions"] = [];
+            for (let item of this.questions)
+                data["questions"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IRound {
+    id: number;
+    category?: string | undefined;
+    numberOfQuestions: number;
+    questions?: Question[] | undefined;
+}
+
+export class Question implements IQuestion {
+    id!: number;
+    roundId!: number;
+    questionNumber!: number;
+    pointValue!: number;
+    wording?: string | undefined;
+
+    constructor(data?: IQuestion) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.roundId = _data["roundId"];
+            this.questionNumber = _data["questionNumber"];
+            this.pointValue = _data["pointValue"];
+            this.wording = _data["wording"];
+        }
+    }
+
+    static fromJS(data: any): Question {
+        data = typeof data === 'object' ? data : {};
+        let result = new Question();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["roundId"] = this.roundId;
+        data["questionNumber"] = this.questionNumber;
+        data["pointValue"] = this.pointValue;
+        data["wording"] = this.wording;
+        return data; 
+    }
+}
+
+export interface IQuestion {
+    id: number;
+    roundId: number;
+    questionNumber: number;
+    pointValue: number;
+    wording?: string | undefined;
+}
+
+export class QuizTeam implements IQuizTeam {
+    id!: number;
+    emailAddress?: string | undefined;
+    teamName?: string | undefined;
+    points!: number;
+
+    constructor(data?: IQuizTeam) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.emailAddress = _data["emailAddress"];
+            this.teamName = _data["teamName"];
+            this.points = _data["points"];
+        }
+    }
+
+    static fromJS(data: any): QuizTeam {
+        data = typeof data === 'object' ? data : {};
+        let result = new QuizTeam();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["emailAddress"] = this.emailAddress;
+        data["teamName"] = this.teamName;
+        data["points"] = this.points;
+        return data; 
+    }
+}
+
+export interface IQuizTeam {
+    id: number;
+    emailAddress?: string | undefined;
+    teamName?: string | undefined;
+    points: number;
+}
+
+export class QuizViewModel implements IQuizViewModel {
+    quizName?: string | undefined;
+    quizHostName?: string | undefined;
+
+    constructor(data?: IQuizViewModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.quizName = _data["quizName"];
+            this.quizHostName = _data["quizHostName"];
+        }
+    }
+
+    static fromJS(data: any): QuizViewModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new QuizViewModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["quizName"] = this.quizName;
+        data["quizHostName"] = this.quizHostName;
+        return data; 
+    }
+}
+
+export interface IQuizViewModel {
+    quizName?: string | undefined;
+    quizHostName?: string | undefined;
+}
+
+export class InviteTeamViewModel implements IInviteTeamViewModel {
+    email?: string | undefined;
+    fieldName?: string | undefined;
+
+    constructor(data?: IInviteTeamViewModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+            this.fieldName = _data["fieldName"];
+        }
+    }
+
+    static fromJS(data: any): InviteTeamViewModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new InviteTeamViewModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["fieldName"] = this.fieldName;
+        return data; 
+    }
+}
+
+export interface IInviteTeamViewModel {
+    email?: string | undefined;
+    fieldName?: string | undefined;
+}
+
+export class QuizHost implements IQuizHost {
+    id!: number;
+    userName?: string | undefined;
+    existingQuizzes?: Quiz[] | undefined;
+
+    constructor(data?: IQuizHost) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.userName = _data["userName"];
+            if (Array.isArray(_data["existingQuizzes"])) {
+                this.existingQuizzes = [] as any;
+                for (let item of _data["existingQuizzes"])
+                    this.existingQuizzes!.push(Quiz.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): QuizHost {
+        data = typeof data === 'object' ? data : {};
+        let result = new QuizHost();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["userName"] = this.userName;
+        if (Array.isArray(this.existingQuizzes)) {
+            data["existingQuizzes"] = [];
+            for (let item of this.existingQuizzes)
+                data["existingQuizzes"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IQuizHost {
+    id: number;
+    userName?: string | undefined;
+    existingQuizzes?: Quiz[] | undefined;
 }
 
 export class ApiException extends Error {

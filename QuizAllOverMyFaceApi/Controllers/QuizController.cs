@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QuizAllOverMyFaceApi.Models;
+using QuizAllOverMyFaceApi.Services.Interfaces;
 
 namespace QuizAllOverMyFaceApi.Controllers
 {
@@ -11,38 +13,49 @@ namespace QuizAllOverMyFaceApi.Controllers
     [ApiController]
     public class QuizController : ControllerBase
     {
-        // GET: api/StartNewQuiz
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly QuizAllOverMyFaceContext _context;
+        private readonly IQuizService _quizService;
+
+        public QuizController(QuizAllOverMyFaceContext context, IQuizService quizService)
         {
-            return new string[] { "value1", "value2" };
+            _context = context;
+            _quizService = quizService;
         }
 
-        // GET: api/StartNewQuiz/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpGet("HealthCheck")]
+        public ActionResult<string> HealthCheck()
         {
-            return "value";
+            return "API up and running";
         }
 
-        // POST: api/StartNewQuiz
-        [HttpPost("StartNew")]
-        public Guid Post()
+        [HttpGet("GetExistingQuiz")]
+        public async Task<Quiz> GetExistingQuiz([FromBody] string quizName)
         {
-            var quizId = Guid.NewGuid();
-            return quizId;
+            return await _quizService.GetExistingQuiz(quizName);
         }
 
-        // PUT: api/StartNewQuiz/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("CreateQuiz")]
+        public async Task<Quiz> CreateQuiz([FromBody] QuizViewModel viewModel)
         {
+            return await _quizService.CreateNewQuiz(viewModel);
+        }
+
+        [HttpPost("ValidateGuid")]
+        public async Task<bool> ValidateQuizGuid([FromBody] string guid)
+        {
+            return await _quizService.ValidateQuizGuid(guid);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        [HttpGet("Nonsense")]
+        public InviteTeamViewModel Nonsense()
+        {
+            return new InviteTeamViewModel();
         }
     }
 }
