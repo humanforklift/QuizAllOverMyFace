@@ -9,9 +9,11 @@ import { GlobalStoreContext } from "../shared/stores/GlobalStore";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { MessageDialog } from "shared-components/material-ui-modals";
 import { AppBarContainer } from "shared-components/material-ui-app-bar-container";
-import Login from "../begin/BeginActions";
-import Register from "../register-user/Register";
+import Begin from "../begin/BeginActions";
+import BeginQuiz from "../begin/BeginQuiz";
+import InviteTeams from "../invite-teams/InviteTeams";
 import ResetPassword from "features/reset-password/ResetPassword";
+import AddRounds from "../add-rounds/AddRounds"
 
 const useStyles = makeStyles(theme => ({
   image: {
@@ -82,14 +84,20 @@ const MainPage = () => {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/register">
-          <Register />
+        <Route path="/begin-quiz">
+          <BeginQuiz />
+        </Route>
+        <Route path="/add-rounds/:guid">
+          <AddRounds />
+        </Route>
+        <Route path="/invite-teams/:guid">
+          <InviteTeams />
         </Route>
         <Route path="/reset-password/:guid/:userId">
           <ResetPassword />
         </Route>
         <Route>
-          <Login />
+          <Begin />
         </Route>
       </Switch>
     </BrowserRouter>
