@@ -11,7 +11,7 @@ interface TextWithTooltipProps {
 
 export const TextWithTooltip = observer(({tooltip, text/*, variant = 'body2'*/}: TextWithTooltipProps) => {
     return (
-        <Tooltip title={tooltip}>
+        <Tooltip title={tooltip!.toString()}>
             <Typography /*variant={variant}*/>
                 {text}
             </Typography>
