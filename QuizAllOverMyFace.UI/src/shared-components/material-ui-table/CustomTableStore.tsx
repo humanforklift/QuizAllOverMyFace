@@ -376,19 +376,19 @@ export class CustomTableStore<RowData extends Object> {
                 }
             }
         }
-        for (const action of this.freeActions) {
-            if (action.icon) {
-                buttons.push((
-                    <Tooltip title={action.title} key={index++}>
-                        <IconButton onClick={action.callback} >
-                            {action.icon()}
-                        </IconButton>
-                    </Tooltip>
-                ))
-            } else {
-                throw new Error('Free actions must have an icon')
-            }
-        }
+        // for (const action of this.freeActions) {
+        //     if (action.icon) {
+        //         buttons.push((
+        //             <Tooltip title={action.title} key={index++}>
+        //                 <IconButton onClick={action.callback} >
+        //                     {action.icon()}
+        //                 </IconButton>
+        //             </Tooltip>
+        //         ))
+        //     } else {
+        //         throw new Error('Free actions must have an icon')
+        //     }
+        // }
         if (this.hasRefreshButton) {
             buttons.push((
                 <React.Fragment key={index++}>
