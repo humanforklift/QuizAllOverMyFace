@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using QuizAllOverMyFaceApi.Services;
 using QuizAllOverMyFaceApi.Services.Interfaces;
+using QuizAllOverMyFaceApi.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace QuizAllOverMyFaceApi
         {
             services.AddScoped<IQuizService, QuizService>();
             services.AddScoped<IQuizHostService, QuizHostService>();
+            services.AddScoped<IQuizHub, QuizHub>();
 
             return services;
         }

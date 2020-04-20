@@ -42,6 +42,10 @@ export class BeginActionsStore {
 
         this.isSaving = false
     }
+
+    @computed get hasSignalRConnection () {
+        return this.globalStore.hasSignalRInfo
+    }
     
     @computed get isStartQuizDisabled () {
         return this.hostName.trim().length < 1

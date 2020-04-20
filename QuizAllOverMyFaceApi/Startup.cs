@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using QuizAllOverMyFaceApi.Models;
+using QuizAllOverMyFaceApi.SignalR;
 
 namespace QuizAllOverMyFaceApi
 {
@@ -31,7 +33,10 @@ namespace QuizAllOverMyFaceApi
 
             services.AddDbContext<QuizAllOverMyFaceContext>(opt =>
                 opt.UseSqlServer(connection));
-            
+
+
+            services.AddSignalR();
+
             services.AddControllers();
 
             services.RegisterServices();
@@ -43,19 +48,24 @@ namespace QuizAllOverMyFaceApi
             {
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000")
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-
-                    //builder.WithOrigins("https://sensetooo.z26.web.core.windows.net")
+                    //builder.WithOrigins("http://localhost:3000")
                     //.AllowAnyMethod()
                     //.AllowAnyHeader();
+                    builder.AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed((host) => true)
+                    .AllowCredentials();
+
+
+                    builder.WithOrigins("https://quizallovermyface.z8.web.core.windows.net/")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
                 });
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime hostApplicationLifetime)
         {
             if (env.IsDevelopment())
             {
@@ -64,15 +74,24 @@ namespace QuizAllOverMyFaceApi
 
             app.UseHttpsRedirection();
 
+            app.UseCors();
+
             app.UseRouting();
 
             app.UseAuthorization();
 
-            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<QuizHub>("/quiz");
+
                 endpoints.MapControllers();
+            });
+
+            hostApplicationLifetime.ApplicationStarted.Register(() =>
+            {
+                var serviceProvider = app.ApplicationServices;
+                var quizHub = (IHubContext<QuizHub>)serviceProvider.GetService(typeof(IHubContext<QuizHub>));
             });
 
             app.UseOpenApi();

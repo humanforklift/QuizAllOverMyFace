@@ -6,6 +6,7 @@ import { cloneObject } from "shared-components/utils/utils"
 // import { UserLoginResponse } from "client/backendclient"
 //import { userCacheHandler } from "client/auth"
 import ResetPassword from "features/reset-password/ResetPassword";
+import * as signalR from "@aspnet/signalr";
 
 interface IMenuItem {
     path: string
@@ -27,13 +28,13 @@ const defaultMenuItems: IMenuItemGroup[] = [
         divisionName: "Reports",
         routes: [
             {
-                landingPage: false, exact: true, displaysInMenu: false, 
+                landingPage: false, exact: true, displaysInMenu: false,
                 name: "Reset Password", path: "/reset-password/:guid/:userId",
                 component: ResetPassword,
                 icon: TimelineIcon
             },
             {
-                landingPage: false, exact: true, displaysInMenu: false, 
+                landingPage: false, exact: true, displaysInMenu: false,
                 name: "Reset Password", path: "/reset-password/",
                 component: ResetPassword,
                 icon: TimelineIcon
@@ -62,13 +63,18 @@ const defaultMenuItems: IMenuItemGroup[] = [
 export class GlobalStore {
 
     constructor(load: boolean = true) {
+        this.connectToSignalR()
         if (load) {
             this.renderMenuItems()
         }
     }
 
     @observable menuItems: IMenuItemGroup[] = []
-    
+    @observable startNewRound = false
+    @observable endRound = true
+    @observable hasSignalRInfo = false
+    @observable signalRConnection: signalR.HubConnection | undefined = undefined
+
     //@observable currentUser? = userCacheHandler.get()
     // @action logout = () => {
     //     this.currentUser = undefined
@@ -107,6 +113,27 @@ export class GlobalStore {
         }
         this.menuItems = newMenuItems
     }
+
+    @action private connectToSignalR = () => {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl(process.env.REACT_APP_API_BASE_URL + "/quiz")
+            .build();
+    
+        connection
+            .start()
+            // .then((a) => {
+            //   connection.invoke("sendMessage", "This is the message to display");
+            // })
+            .catch((err) => {
+                console.log(err.toString());
+            });
+    
+            this.signalRConnection = connection;
+    }
+
+    // @action private connectSignalR = () => {
+
+    // }
     /** defines if the menu drawer is open */
     @observable drawerOpen = false
 }
