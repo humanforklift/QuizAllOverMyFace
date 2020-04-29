@@ -54,8 +54,10 @@ export default function fieldProps(updatableObject: IUpdatable, onValueChange?: 
         }
     }
 
-    if (!isObservableProp(updatableObject, 'value')) {
-        throw new Error(`Property 'value' on the updatable object is not a mobx observable.`)
+    if (!Array.isArray(updatableObject)) {
+        if (!isObservableProp(updatableObject, 'value')) {
+            throw new Error(`Property 'value' on the updatable object is not a mobx observable.`)
+        }
     }
 
     const onChange = async (event: any) => {
@@ -87,7 +89,7 @@ export function fieldValueProps<T extends Object, P extends Extract<keyof T, str
 
     const setValue = (value: any) => {
         const old = parentObject[propertyName]
-        
+
         parentObject[propertyName] = value
 
         if (onValueChanged) {
@@ -95,8 +97,10 @@ export function fieldValueProps<T extends Object, P extends Extract<keyof T, str
         }
     }
 
-    if (!isObservableProp(parentObject, propertyName)) {
-        throw new Error(`Property ${propertyName} is not an mobx observable.`)
+    if (!Array.isArray(parentObject)) {
+        if (!isObservableProp(parentObject, propertyName)) {
+            throw new Error(`Property ${propertyName} is not an mobx observable.`)
+        }
     }
 
     const onChange = async (event: any) => {

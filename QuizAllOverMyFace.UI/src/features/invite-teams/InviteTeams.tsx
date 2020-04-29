@@ -106,10 +106,10 @@ const InviteTeams = () => {
           <CardHeader className={classes.header} title="Invite Teams" />
           <CardContent>
             <div>
-              {store.teams.map((row, index) => <InputProps
-                stateObject={store}
+              {store.inviteTeams.map((row, index) => <InputProps
+                stateObject={store.inviteTeams[index]}
                 errorHandler={store.errorHandler}
-                propertyName={store.inviteTeams[index].fieldName!}
+                propertyName='emailAddress'
               >
                 <TextField
                   key={index}
@@ -153,7 +153,7 @@ const InviteTeams = () => {
               size="large"
               className={classes.addMore}
               onClick={store.addAdditionalTeam}
-              disabled={store.isStartQuizDisabled}
+              disabled={!store.canAddAnotherTeam}
             >
               Add Another Team
             </Button>
@@ -164,7 +164,7 @@ const InviteTeams = () => {
               onClick={store.createQuiz}
               disabled={store.isStartQuizDisabled}
             >
-              Create Quiz
+              Invite Teams
             </Button>
           </CardActions>
         </Card>

@@ -15,11 +15,13 @@ namespace QuizAllOverMyFaceApi.Controllers
     {
         private readonly QuizAllOverMyFaceContext _context;
         private readonly IQuizService _quizService;
+        private readonly IEmailService _emailService;
 
-        public QuizController(QuizAllOverMyFaceContext context, IQuizService quizService)
+        public QuizController(QuizAllOverMyFaceContext context, IQuizService quizService, IEmailService emailService)
         {
             _context = context;
             _quizService = quizService;
+            _emailService = emailService;
         }
 
         [HttpGet("HealthCheck")]
@@ -50,6 +52,31 @@ namespace QuizAllOverMyFaceApi.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        [HttpPost("RegisterTeam")]
+        public async Task<QuizTeam> RegisterQuizTeam([FromBody] string teamName)
+        {
+            return await _quizService.RegisterQuizTeam(teamName);
+        }
+
+        [HttpGet("ChuckNorrisFact")]
+        public async Task<string> GetChuckNorrisFact()
+        {
+            return await _quizService.GetChuckNorrisFact();
+        }
+
+        [HttpPost("InviteTeam")]
+        public async Task<ActionResult> InviteTeams([FromBody] TeamInviteRequest request)
+        {
+            var errors = await _emailService.InviteTeams(request.QuizId, request.EmailAddresses);
+
+            if (errors.Count > 0)
+            {
+                throw new Exception("There was an error inviting teams");
+            }
+
+            return Ok();
         }
 
         [HttpGet("Nonsense")]

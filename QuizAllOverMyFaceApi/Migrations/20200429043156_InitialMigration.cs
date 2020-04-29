@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace QuizAllOverMyFaceApi.Migrations
 {
-    public partial class initial : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -34,14 +34,28 @@ namespace QuizAllOverMyFaceApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TeamInvites",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuizId = table.Column<string>(nullable: true),
+                    EmailAddress = table.Column<string>(nullable: true),
+                    HasTeamRegistered = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeamInvites", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Quizzes",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    HostId = table.Column<int>(nullable: false),
+                    QuizHostId = table.Column<int>(nullable: true),
                     Name = table.Column<string>(nullable: true),
-                    NumberOfRounds = table.Column<int>(nullable: false),
-                    QuizHostId = table.Column<int>(nullable: true)
+                    NumberOfRounds = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -176,6 +190,9 @@ namespace QuizAllOverMyFaceApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "QuizTeams");
+
+            migrationBuilder.DropTable(
+                name: "TeamInvites");
 
             migrationBuilder.DropTable(
                 name: "TeamAnswers");

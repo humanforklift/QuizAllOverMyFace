@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using QuizAllOverMyFaceApi.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace QuizAllOverMyFaceApi.Models
         
         public QuizAllOverMyFaceContext(DbContextOptions<QuizAllOverMyFaceContext> options) : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         internal DbSet<Quiz> Quizzes { get; set; }
@@ -25,9 +26,12 @@ namespace QuizAllOverMyFaceApi.Models
         internal DbSet<Question> Questions { get; set; }
         internal DbSet<Answer> Answers { get; set; }
         internal DbSet<TeamAnswer> TeamAnswers { get; set; }
+        internal DbSet<TeamInvite> TeamInvites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<QuizHost>().HasMany(x => x.ExistingQuizzes);
+            
             base.OnModelCreating(modelBuilder);
         }
     }

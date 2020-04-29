@@ -42,6 +42,27 @@ namespace QuizAllOverMyFaceApi.Migrations
                     b.ToTable("Answers");
                 });
 
+            modelBuilder.Entity("QuizAllOverMyFaceApi.Models.Entities.TeamInvite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("EmailAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("HasTeamRegistered")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("QuizId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TeamInvites");
+                });
+
             modelBuilder.Entity("QuizAllOverMyFaceApi.Models.Question", b =>
                 {
                     b.Property<int>("Id")
@@ -73,9 +94,6 @@ namespace QuizAllOverMyFaceApi.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("HostId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -190,7 +208,7 @@ namespace QuizAllOverMyFaceApi.Migrations
 
             modelBuilder.Entity("QuizAllOverMyFaceApi.Models.Quiz", b =>
                 {
-                    b.HasOne("QuizAllOverMyFaceApi.Models.QuizHost", null)
+                    b.HasOne("QuizAllOverMyFaceApi.Models.QuizHost", "QuizHost")
                         .WithMany("ExistingQuizzes")
                         .HasForeignKey("QuizHostId");
                 });

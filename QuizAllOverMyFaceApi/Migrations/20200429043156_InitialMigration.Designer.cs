@@ -10,8 +10,8 @@ using QuizAllOverMyFaceApi.Models;
 namespace QuizAllOverMyFaceApi.Migrations
 {
     [DbContext(typeof(QuizAllOverMyFaceContext))]
-    [Migration("20200412063851_initial")]
-    partial class initial
+    [Migration("20200429043156_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,6 +42,27 @@ namespace QuizAllOverMyFaceApi.Migrations
                     b.HasIndex("TeamAnswerId");
 
                     b.ToTable("Answers");
+                });
+
+            modelBuilder.Entity("QuizAllOverMyFaceApi.Models.Entities.TeamInvite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("EmailAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("HasTeamRegistered")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("QuizId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TeamInvites");
                 });
 
             modelBuilder.Entity("QuizAllOverMyFaceApi.Models.Question", b =>
@@ -75,9 +96,6 @@ namespace QuizAllOverMyFaceApi.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("HostId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -192,7 +210,7 @@ namespace QuizAllOverMyFaceApi.Migrations
 
             modelBuilder.Entity("QuizAllOverMyFaceApi.Models.Quiz", b =>
                 {
-                    b.HasOne("QuizAllOverMyFaceApi.Models.QuizHost", null)
+                    b.HasOne("QuizAllOverMyFaceApi.Models.QuizHost", "QuizHost")
                         .WithMany("ExistingQuizzes")
                         .HasForeignKey("QuizHostId");
                 });

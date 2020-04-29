@@ -2,10 +2,11 @@ import React from "react";
 import { useState, useEffect, useContext } from "react";
 import SignalRController from "./SignalRController"
 import { GlobalStoreContext } from "../shared/stores/GlobalStore";
-import { Typography } from "@material-ui/core";
+import { Typography, Snackbar } from "@material-ui/core";
 import { observer } from "mobx-react-lite";
+import FlexBanner from "flex-banner";
 
-const SignalRClient: React.FC = () => {
+const SignalRClient: React.FC = () => {  
     const globalStore = useContext(GlobalStoreContext);
     const connection = globalStore.signalRConnection
     
@@ -21,6 +22,10 @@ const SignalRClient: React.FC = () => {
     const [question8, setQuestion8] = useState<string | null>(null);
     const [question9, setQuestion9] = useState<string | null>(null);
     const [question10, setQuestion10] = useState<string | null>(null);
+
+    const toggleBanner = () => {
+      globalStore.showBanner = !globalStore.showBanner
+    }
 
     useEffect(() => {
       connection!.on("setClientMessage", (message) => {
@@ -65,7 +70,8 @@ const SignalRClient: React.FC = () => {
     if (globalStore.hasSignalRInfo) {
       return (
         <>
-          <Typography variant={"h5"}>{clientMessage}</Typography>
+          <FlexBanner title={clientMessage!} ctaLink='' ctaTitle='' isCenter animationTime={0} delayToShowBanner={0} crossIconSize={0} wrapperStyle={{backgroundColor: '#f5f774'}} mainStyleTitle={{color: '#000'}} crossStyle={{color: '#000'}}/>
+          {/* <Typography variant={"h5"}>{clientMessage}</Typography> */}
           <Typography variant={"h3"}>{roundName}</Typography>
           <Typography variant={"h5"}>{question1}</Typography>
           <Typography variant={"h5"}>{question2}</Typography>

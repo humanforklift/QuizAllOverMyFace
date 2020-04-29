@@ -9,11 +9,17 @@ import { quizClient } from "client/backendclientinstances";
 import { QuizViewModel, QuizTeam, InviteTeamViewModel } from "client/backendclient";
 import { ObservableValue, IObservableFactory } from "mobx/lib/internal";
 
+class InviteTeam {
+    @observable emailAddress: string = ''
+}
+
 export class InviteTeamsStore {
     constructor(globalStore: GlobalStore) {
         this.globalStore = globalStore
     }
     globalStore: GlobalStore
+
+    @observable inviteTeams = [] as InviteTeam[]
 
     @observable email1 = ""
     @observable email2 = ""
@@ -25,19 +31,18 @@ export class InviteTeamsStore {
     @observable isSaving = false
     @observable quizCreatedSuccessfully = false
 
-    @observable inviteTeams = [] as InviteTeamViewModel[]
     @observable teams = [] as QuizTeam[]
     // @observable newEmail = 
 
     @observable errorHandler = new FormErrorHandler()
 
     createTeamsArray = () => {
-        const team = new QuizTeam({emailAddress: "", points: 0, id: 0})
-        this.teams.push(team)
+        // const team = new QuizTeam({emailAddress: "", points: 0, id: 0})
+        // this.teams.push(team)
         //let thing = this.teams.length.toString()
-        this.inviteTeams.push(new InviteTeamViewModel({email: "", fieldName: this.email1}))
+        this.inviteTeams.push(new InviteTeam())
         //this.emails.push(new ))
-        this.teamCount = 1
+        //this.teamCount = 1
     }
 
     @action createQuiz = async () => {
@@ -67,22 +72,27 @@ export class InviteTeamsStore {
     // }
 
     @action addAdditionalTeam = () => {
-        const team = new QuizTeam({emailAddress: "", points: 0, id: 0})
-        this.teams.push(team)
-        let thing = ''
+        // const team = new QuizTeam({emailAddress: "", points: 0, id: 0})
+        // this.teams.push(team)
+        // let thing = ''
 
-        if (this.teams.length === 2) {
-            thing = this.email2
-        } else if (this.teams.length === 3) {
-            thing = this.email3
-        } else if (this.teams.length === 4) {
-            thing = this.email4
-        } else if (this.teams.length === 5) {
-            thing = this.email5
-        }
+        // if (this.teams.length === 2) {
+        //     thing = this.email2
+        // } else if (this.teams.length === 3) {
+        //     thing = this.email3
+        // } else if (this.teams.length === 4) {
+        //     thing = this.email4
+        // } else if (this.teams.length === 5) {
+        //     thing = this.email5
+        // }
 
-        this.inviteTeams.push(new InviteTeamViewModel({email: "", fieldName: this.email4}))
-        this.teamCount += 1
+        this.inviteTeams.push(new InviteTeam())
+        //this.teamCount += 1
+    }
+
+    @computed get canAddAnotherTeam() {
+        const teamsWithoutEmail = this.inviteTeams.filter(team => team.emailAddress.length < 1)
+        return teamsWithoutEmail.length < 1
     }
 
     // @computed get isButtonDisabled () {

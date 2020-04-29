@@ -9,6 +9,7 @@ namespace QuizAllOverMyFaceApi.Models
     {
         public int Id { get; set; }
         public string UserName { get; set; }
+
         public List<Quiz> ExistingQuizzes { get; set; }
     }
 }

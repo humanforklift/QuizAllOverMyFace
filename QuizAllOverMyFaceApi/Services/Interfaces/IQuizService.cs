@@ -11,5 +11,7 @@ namespace QuizAllOverMyFaceApi.Services.Interfaces
         Task<Quiz> GetExistingQuiz(string quizName);
         Task<Quiz> CreateNewQuiz(QuizViewModel viewModel);
         Task<bool> ValidateQuizGuid(string guid);
+        Task<QuizTeam> RegisterQuizTeam(string teamName);
+        Task<string> GetChuckNorrisFact();
     }
 }

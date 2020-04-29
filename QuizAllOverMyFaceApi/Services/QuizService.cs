@@ -4,6 +4,7 @@ using QuizAllOverMyFaceApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace QuizAllOverMyFaceApi.Services
@@ -31,7 +32,7 @@ namespace QuizAllOverMyFaceApi.Services
             var quiz = new Quiz
             {
                 Id = Guid.NewGuid(),
-                HostId = host.Id,
+                QuizHost = host,
                 Name = viewModel.QuizName,
                 //NumberOfRounds = viewModel.NumberOfRounds
             };
@@ -50,6 +51,41 @@ namespace QuizAllOverMyFaceApi.Services
                 return await _context.Quizzes.AnyAsync(q => q.Id == result);
             }
             return false;            
+        }
+
+        public async Task<QuizTeam> RegisterQuizTeam(string teamName)
+        {
+            var team = new QuizTeam
+            {
+                TeamName = teamName
+            };
+
+            _context.QuizTeams.Add(team);
+            await _context.SaveChangesAsync();
+
+            return team;
+        }
+
+        public async Task<string> GetChuckNorrisFact()
+        {
+            var client = new HttpClient();
+            var url = "http://api.icndb.com/jokes/random";
+
+            var response = await client.GetAsync(url);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var chuckNorrisFact = Newtonsoft.Json.JsonConvert.DeserializeObject<ChuckNorrisFact>(content);
+                return RemoveStringCharacters(chuckNorrisFact.Value.Joke);
+            }
+
+            return "Chuck Norris is watching you";
+        }
+
+        private string RemoveStringCharacters(string original)
+        {
+            return original.Replace("&quot", "");
         }
     }
 }
