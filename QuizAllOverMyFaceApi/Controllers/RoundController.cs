@@ -4,43 +4,44 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QuizAllOverMyFaceApi.Models;
+using QuizAllOverMyFaceApi.Services.Interfaces;
 
 namespace QuizAllOverMyFaceApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Round")]
     [ApiController]
     public class RoundController : ControllerBase
     {
-        // GET: api/Round
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly QuizAllOverMyFaceContext _context;
+        private readonly IRoundService _roundService;
+        private readonly IQuizService _quizService;
+
+        public RoundController(QuizAllOverMyFaceContext context, IRoundService roundService, IQuizService quizService)
         {
-            return new string[] { "value1", "value2" };
+            _context = context;
+            _roundService = roundService;
+            _quizService = quizService;
         }
 
-        // GET: api/Round/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpPost("GenerateEmptyRound")]
+        public async Task<RoundViewModel> GenerateEmptyRound([FromBody] string quizId)
         {
-            return "value";
+            if (! await _quizService.QuizGuidIsValid(quizId))
+            {
+                throw new Exception("Quiz does not exist");
+            }
+            
+            return await _roundService.GenerateEmptyRound(quizId);
         }
 
-        // POST: api/Round
-        [HttpPost]
-        public void Post([FromBody] string value)
+        //TODO - look at changing return type to viewModel instead of entity
+        [HttpPost("AddRound")]
+        public async Task<ActionResult> AddRound([FromBody] RoundViewModel viewModel)
         {
-        }
+            await _roundService.AddRoundToQuiz(viewModel);
 
-        // PUT: api/Round/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return Ok();
         }
     }
 }

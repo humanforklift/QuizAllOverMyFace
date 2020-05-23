@@ -11,5 +11,8 @@ namespace QuizAllOverMyFaceApi.Models
         public string Category { get; set; }
         public int NumberOfQuestions { get; set; }
         public List<Question> Questions { get; set; }
+
+        public Guid QuizId { get; set; }
+        public Quiz Quiz { get; set; }
     }
 }

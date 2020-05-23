@@ -7,6 +7,7 @@ using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace QuizAllOverMyFaceApi.Services
@@ -30,7 +31,7 @@ namespace QuizAllOverMyFaceApi.Services
                 var url = await GenerateInviteLink(quizId, email);
                 var response = await SendEmail(url, email);
 
-                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.Accepted)
                 {
                     errors.Add(response.Body.ReadAsStringAsync().Result);
                 }
@@ -45,7 +46,7 @@ namespace QuizAllOverMyFaceApi.Services
             var from = new EmailAddress("registerQuizTeam@QuizAllOverMyFace.com", "Register Quiz Team");
             var recipient = new EmailAddress(emailAddress);
 
-            var subject = "You've been invited to a quiz night :)";
+            var subject = "You've been invited to a quiz :)";
             var plainTextContent = "Please follow the link below to register your team:";
             var htmlContent = $"<a href={link}>{link}</a>";
             var displayRecipients = false;
@@ -62,6 +63,7 @@ namespace QuizAllOverMyFaceApi.Services
             {
                 EmailAddress = emailAddress,
                 QuizId = quizId,
+                Guid = guid,
                 HasTeamRegistered = false
             };
 
@@ -71,5 +73,10 @@ namespace QuizAllOverMyFaceApi.Services
             url = $"{url}/{quizId}/{guid}";
             return url;
         }
+
+        //private async Task EnsureDuplicateInvitesNotSent()
+        //{
+
+        //}
     }
 }

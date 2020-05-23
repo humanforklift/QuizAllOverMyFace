@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizAllOverMyFaceApi.Models;
 
 namespace QuizAllOverMyFaceApi.Migrations
 {
     [DbContext(typeof(QuizAllOverMyFaceContext))]
-    partial class QuizAllOverMyFaceContextModelSnapshot : ModelSnapshot
+    [Migration("20200430022507_AddedGuidColumnToTeamInviteTable")]
+    partial class AddedGuidColumnToTeamInviteTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,7 +170,7 @@ namespace QuizAllOverMyFaceApi.Migrations
                     b.Property<int>("NumberOfQuestions")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("QuizId")
+                    b.Property<Guid?>("QuizId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -227,11 +229,9 @@ namespace QuizAllOverMyFaceApi.Migrations
 
             modelBuilder.Entity("QuizAllOverMyFaceApi.Models.Round", b =>
                 {
-                    b.HasOne("QuizAllOverMyFaceApi.Models.Quiz", "Quiz")
+                    b.HasOne("QuizAllOverMyFaceApi.Models.Quiz", null)
                         .WithMany("Rounds")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("QuizId");
                 });
 #pragma warning restore 612, 618
         }

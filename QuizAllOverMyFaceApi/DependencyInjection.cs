@@ -17,6 +17,7 @@ namespace QuizAllOverMyFaceApi
             services.AddScoped<IQuizHostService, QuizHostService>();
             services.AddScoped<IQuizHub, QuizHub>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IRoundService, RoundService>();
 
             return services;
         }

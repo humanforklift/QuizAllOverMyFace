@@ -13,5 +13,6 @@ namespace QuizAllOverMyFaceApi.Services.Interfaces
         Task<bool> ValidateQuizGuid(string guid);
         Task<QuizTeam> RegisterQuizTeam(string teamName);
         Task<string> GetChuckNorrisFact();
+        Task<bool> QuizGuidIsValid(string quizId);
     }
 }

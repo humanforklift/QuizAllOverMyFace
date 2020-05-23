@@ -83,6 +83,11 @@ namespace QuizAllOverMyFaceApi.Services
             return "Chuck Norris is watching you";
         }
 
+        public async Task<bool> QuizGuidIsValid(string quizId)
+        {
+            return await _context.Quizzes.AnyAsync(q => q.Id == new Guid(quizId));
+        }
+
         private string RemoveStringCharacters(string original)
         {
             return original.Replace("&quot", "");

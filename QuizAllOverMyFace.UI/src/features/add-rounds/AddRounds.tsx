@@ -6,14 +6,15 @@ import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import CardHeader from "@material-ui/core/CardHeader";
-import { Typography, Link, Paper } from "@material-ui/core";
+import { Typography, Link, Paper, InputAdornment, IconButton } from "@material-ui/core";
 import { observer, useLocalStore } from "mobx-react-lite";
 import { GlobalStoreContext } from "../shared/stores/GlobalStore";
 import { InputProps } from "../../shared-components/input-props";
 import { useHistory, Redirect, useParams } from "react-router-dom";
 import { LoadingModal } from "../../shared-components/material-ui-modals";
-import { InviteTeamsStore } from "./InviteTeamsStore";
-import useInitialMount from "custom-hooks/useInitialMount";
+import { AddRoundsStore } from "./AddRoundsStore";
+import useInitialMount from "../../shared-components/hooks/useInitialMount";
+import ClearIcon from '@material-ui/icons/Clear';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,7 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
     card: {
         marginTop: theme.spacing(10),
         minWidth: '600px',
-        minHeight: '600px',
+        minHeight: '400px',
         // maxHeight: '600px',
         border: "1px solid #808080",
     },
@@ -75,26 +76,26 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const InviteTeams = () => {
+const AddRounds = () => {
   const { guid } = useParams();
   const classes = useStyles({});
   const history = useHistory();
   const globalStore = useContext(GlobalStoreContext);
-  const store = useLocalStore(source => new InviteTeamsStore(source),
+  const store = useLocalStore(
+    (source) => new AddRoundsStore(source),
     {
-      guid,
       globalStore,
+      guid
     }
   );
 
   useInitialMount(() => {
-    store.createTeamsArray()
-    store.getQuizIdFromUrl()
+    store.createQuestionsArray()
   })
 
   const handleKeyPress = (e: any) => {
     if (e.keyCode === 13 || e.which === 13) {
-      !store.canAddAnotherTeam || store.sendInvites();
+      store.isCreateRoundDisabled || store.saveRound();
     }
   };
 
@@ -105,42 +106,55 @@ const InviteTeams = () => {
     <div className={classes.bg}>
       <form className={classes.container} noValidate autoComplete="off">
         <Card className={classes.card}>
-          <CardHeader className={classes.header} title="Invite Teams" />
+          <CardHeader className={classes.header} title="Add Round" />
           <CardContent>
             <div>
-              {store.inviteTeams.map((row, index) => <InputProps
-                stateObject={store.inviteTeams[index]}
+              <InputProps
+                stateObject={store}
                 errorHandler={store.errorHandler}
-                propertyName='emailAddress'
+                propertyName="roundSubject"
+              >
+                <TextField
+                  fullWidth
+                  required
+                  id="roundSubject"
+                  label="Round Subject"
+                  placeholder="Enter the subject for this round"
+                  margin="normal"
+                  onKeyPress={(e) => handleKeyPress(e)}
+                />
+              </InputProps>
+              {store.questions.map((row, index) => <InputProps
+                stateObject={store.questions[index]}
+                errorHandler={store.errorHandler}
+                propertyName='questionText'
               >
                 <TextField
                   key={index}
                   fullWidth
                   required
                   id={index.toString()}
-                  label="Send Invite To"
-                  placeholder="Enter email address"
+                  label={`Question ${index + 1}`}
+                  placeholder="Enter question text"
                   margin="normal"
                   onKeyPress={(e) => handleKeyPress(e)}
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">
+                      <IconButton
+                        aria-label="remove question"
+                        disabled={index === 0 && store.questions.length === 1}
+                        onClick={() => store.removeQuestion(index)}
+                        edge="end"
+                      >
+                        <ClearIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  }}
                 />
               </InputProps>)}
-              {/* <InputProps
-                stateObject={store}
-                errorHandler={store.errorHandler}
-                propertyName="quizName"
-              >
-                <TextField
-                  fullWidth
-                  required
-                  id="quizName"
-                  label="Quizzical Name"
-                  placeholder="Quiz Name"
-                  margin="normal"
-                  onKeyPress={(e) => handleKeyPress(e)}
-                />
-              </InputProps> */}
             </div>
           </CardContent>
+
           <CardActions className={classes.actions}>
             <Button
               variant="outlined"
@@ -154,27 +168,27 @@ const InviteTeams = () => {
               variant="outlined"
               size="large"
               className={classes.addMore}
-              onClick={store.addAdditionalTeam}
-              disabled={!store.canAddAnotherTeam}
+              onClick={store.addAdditionalQuestion}
+              disabled={!store.canAddAnotherQuestion}
             >
-              Add Another Team
+              Add Another Question
             </Button>
             <Button
               variant="contained"
               size="large"
               className={classes.submitBtn}
-              onClick={store.sendInvites}
-              disabled={!store.canAddAnotherTeam}
+              onClick={store.saveRound}
+              disabled={store.isCreateRoundDisabled}
             >
-              Invite Teams
+              Save Round
             </Button>
           </CardActions>
         </Card>
       </form>
-      <LoadingModal title="Sending Invites..." visible={store.isSaving} />
-      {store.invitedSuccessfully && <Redirect to={{ pathname: `/add-rounds/${store.quizId}` }} />}
+      <LoadingModal title="Saving Round..." visible={store.isSaving} />
+      {/* {store.quizCreatedSuccessfully && <Redirect to={{ pathname: "/inviteTeams" }} />} */}
     </div>
   );
 };
 
-export default observer(InviteTeams);
+export default observer(AddRounds);

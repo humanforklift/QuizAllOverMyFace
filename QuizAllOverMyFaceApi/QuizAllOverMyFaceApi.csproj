@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200428041826_AddTeamInviteTable.cs" />
     <Compile Remove="Migrations\20200428041826_AddTeamInviteTable.Designer.cs" />
+    <Compile Remove="Migrations\20200507024632_UpdatedRoundClassToDefineRelationshipWithQuizClass.cs" />
+    <Compile Remove="Migrations\20200507024632_UpdatedRoundClassToDefineRelationshipWithQuizClass.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
