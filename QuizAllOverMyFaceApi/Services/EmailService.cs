@@ -56,7 +56,7 @@ namespace QuizAllOverMyFaceApi.Services
 
         private async Task<string> GenerateInviteLink(string quizId, string emailAddress)
         {
-            var url = $"{_configuration.GetValue<string>("UI_BASE_URL")}invite-teams";
+            var url = $"{_configuration.GetValue<string>("UI_BASE_URL")}register-for-quiz";
             var guid = Guid.NewGuid();
 
             var teamInvite = new TeamInvite
