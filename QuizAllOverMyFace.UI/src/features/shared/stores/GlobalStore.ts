@@ -73,6 +73,7 @@ export class GlobalStore {
     @observable startNewRound = false
     @observable endRound = true
     @observable hasSignalRInfo = false
+    @observable hasAddedRound = false
     @observable showBanner = false
     @observable signalRConnection: signalR.HubConnection | undefined = undefined
 

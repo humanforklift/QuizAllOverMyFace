@@ -1,12 +1,9 @@
 import { observable, action, computed } from "mobx"
-import { createContext } from "react"
-//import { accountClient } from "client/backendclientinstances"
-// import { User } from "client/backendclient";
-// import { UserLoginRequest } from "client/backendclient";
 import { GlobalStore } from "../../features/shared/stores/GlobalStore";
 import FormErrorHandler from "../../shared-components/input-props/form-error-handler";
 import { roundClient, quizClient } from "../../client/backendclientinstances";
-import { QuizViewModel, Quiz, Round, Question, RoundViewModel, QuestionViewModel } from "../../client/backendclient";
+import { QuestionViewModel } from "../../client/backendclient";
+import { messageConfirm } from "shared-components/material-ui-modals";
 
 class ObservableQuestion {
     @observable questionText: string = ''
@@ -29,36 +26,29 @@ export class AddRoundsStore {
     @observable numberOfQuestionsInRound = ""
     
     @observable isSaving = false
-    @observable roundCreatedSuccessfully = false
+    @observable redirectUserToHomepage = false
 
     @observable isGuidValid = false
 
     @observable questions = [] as ObservableQuestion[]
 
     @observable errorHandler = new FormErrorHandler()
-    // @observable round = new Round({id:0, quizId: "", numberOfQuestions:1, questions: [] as Question[]})
 
     @action saveRound = async () => {
         this.isSaving = true
         try {
             const round = await roundClient.generateEmptyRound(this.sp.guid!);
+
             if (await this.validation() && round != null) {
                 const questionViewModel: QuestionViewModel[] = this.questions.map((x, index) => (new QuestionViewModel({ questionText: x.questionText, pointValue: x.questionValue, questionNumber: index + 1 })))
                 round.subject = this.roundSubject
                 round.questions = questionViewModel
-                //round.quizId = parseInt(this.sp.guid!, 10)
+
                 await roundClient.addRound(round)
-                this.roundCreatedSuccessfully = true
+                this.sp.globalStore.hasAddedRound = true
+
+                await this.determineActionAfterRoundSaved()
             }
-            // if (await this.validation()) {
-            //     let questionViewModel = new QuestionViewModel[(this.questions.map((x, index) => ({ questionText: x.questionText, pointValue: x.questionValue, questionNumber: index + 1 })))]
-            //     const roundViewModel = new RoundViewModel({
-            //         subject: this.roundSubject,
-            //         questions: questionViewModel
-            //     })
-            //     const response = await roundClient.addRound()
-            //     this.invitedSuccessfully = true
-            // }
         } catch (error) {
             console.log(error)
         }
@@ -75,11 +65,7 @@ export class AddRoundsStore {
         this.isGuidValid = await quizClient.validateQuizGuid(this.sp.guid!)
     }
 
-    @action createQuestionsArray = () => {
-        this.questions.push(new ObservableQuestion())
-    }
-
-    @action addAdditionalQuestion = () => {
+    @action addQuestionToArray = () => {
         this.questions.push(new ObservableQuestion())
     }
 
@@ -97,6 +83,12 @@ export class AddRoundsStore {
         || !this.canAddAnotherQuestion
     }
 
+    @action clearRound = () => {
+        this.questions = [] as ObservableQuestion[]
+        this.addQuestionToArray()
+        this.roundSubject = ''
+    }
+
     // @computed get isButtonDisabled () {
     //     return this.quizName.trim().length < 1 
     //     || this.numberOfRounds === 0
@@ -104,6 +96,17 @@ export class AddRoundsStore {
     //     || this.password1.trim().length < 1
     //     || this.password2.trim().length < 1
     // }
+
+    determineActionAfterRoundSaved = async () => {
+        await messageConfirm({title: "Round successfully added", content: "Would you like to add another round?"}).then((confirmed) => { 
+            if (confirmed) {
+                this.clearRound()
+            }
+            else {
+                this.redirectUserToHomepage = true
+            }
+        })
+    }
 
     validation = async () => {
         this.errorHandler.reset()

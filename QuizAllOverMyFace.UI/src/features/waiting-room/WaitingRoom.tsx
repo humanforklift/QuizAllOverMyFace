@@ -10,10 +10,11 @@ import { Typography, Link, Paper } from "@material-ui/core";
 import { observer, useLocalStore } from "mobx-react-lite";
 import { GlobalStoreContext } from "../shared/stores/GlobalStore";
 import { InputProps } from "../../shared-components/input-props";
-import { useHistory, Redirect } from "react-router-dom";
+import { useHistory, Redirect, useParams } from "react-router-dom";
 import { LoadingModal } from "../../shared-components/material-ui-modals";
 import { WaitingRoomStore } from "./WaitingRoomStore";
 import useInitialMount from "../../shared-components/hooks/useInitialMount";
+import ParticipantsGrid from './ParticipantsGrid'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -60,12 +61,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const WaitingRoom = () => {
+  const { guid } = useParams();
   const classes = useStyles({});
   const history = useHistory();
   const globalStore = useContext(GlobalStoreContext);
   const store = useLocalStore(
-    (source) => new WaitingRoomStore(source.globalStore),
+    (source) => new WaitingRoomStore(source),
     {
+      guid,
       globalStore,
     }
   );
@@ -74,7 +77,11 @@ const WaitingRoom = () => {
     async function retrieveFact() {
       await store.retrieveFact();
     }
+    async function retrieveQuiz() {
+      await store.retrieveQuizFromDB()
+    }
     retrieveFact();
+    retrieveQuiz();
   });
 
   const preventDefault = (event: React.SyntheticEvent) =>
@@ -99,6 +106,7 @@ const WaitingRoom = () => {
           </CardContent>
         </Card>
       </div>
+      <ParticipantsGrid />
     </>
   );
 };

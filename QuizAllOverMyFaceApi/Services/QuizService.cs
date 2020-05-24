@@ -20,6 +20,19 @@ namespace QuizAllOverMyFaceApi.Services
             _quizHostService = quizHostService;
         }
 
+        public async Task<Quiz> GetQuizById(string quizId)
+        {
+            Guid.TryParse(quizId, out var result);
+            if (result != Guid.Empty)
+            {
+                return await _context.Quizzes.Where(q => q.Id == result)
+                    .Include(q => q.Teams)
+                    .Include(q => q.Rounds)
+                    .SingleOrDefaultAsync();
+            }
+            return null;
+        }
+
         public async Task<Quiz> GetExistingQuiz(string quizName)
         {
             return await _context.Quizzes.SingleOrDefaultAsync(q => q.Name == quizName);

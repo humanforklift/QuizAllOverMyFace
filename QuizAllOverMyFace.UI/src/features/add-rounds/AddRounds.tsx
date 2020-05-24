@@ -90,12 +90,12 @@ const AddRounds = () => {
   );
 
   useInitialMount(() => {
-    store.createQuestionsArray()
+    store.addQuestionToArray()
   })
 
   const handleKeyPress = (e: any) => {
     if (e.keyCode === 13 || e.which === 13) {
-      store.isCreateRoundDisabled || store.saveRound();
+      store.canAddAnotherQuestion || store.addQuestionToArray();
     }
   };
 
@@ -168,7 +168,7 @@ const AddRounds = () => {
               variant="outlined"
               size="large"
               className={classes.addMore}
-              onClick={store.addAdditionalQuestion}
+              onClick={store.addQuestionToArray}
               disabled={!store.canAddAnotherQuestion}
             >
               Add Another Question
@@ -186,7 +186,7 @@ const AddRounds = () => {
         </Card>
       </form>
       <LoadingModal title="Saving Round..." visible={store.isSaving} />
-      {/* {store.quizCreatedSuccessfully && <Redirect to={{ pathname: "/inviteTeams" }} />} */}
+      {store.redirectUserToHomepage && <Redirect to={{ pathname: "/" }} />}
     </div>
   );
 };

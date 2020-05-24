@@ -30,12 +30,26 @@ namespace QuizAllOverMyFaceApi.Controllers
             return "API up and running";
         }
 
+        [HttpPost("GetQuizById")]
+        public async Task<Quiz> GetQuizById([FromBody] string quizId)
+        {
+            var quiz = await _quizService.GetQuizById(quizId);
+
+            if (quiz == null)
+            {
+                throw new Exception("Quiz doesn't exist");
+            }
+
+            return quiz;
+        }
+
         [HttpGet("GetExistingQuiz")]
         public async Task<Quiz> GetExistingQuiz([FromBody] string quizName)
         {
             return await _quizService.GetExistingQuiz(quizName);
         }
 
+        //TODO - look at changing return type to viewModel instead of entity
         [HttpPost("CreateQuiz")]
         public async Task<Quiz> CreateQuiz([FromBody] QuizViewModel viewModel)
         {
@@ -78,6 +92,12 @@ namespace QuizAllOverMyFaceApi.Controllers
 
             return Ok();
         }
+
+        //[HttpGet("EnsureDistinctEmails")]
+        //public async Task<ActionResult> EnsureDuplicateInvitesNotSent()
+        //{
+
+        //}
 
         [HttpGet("Nonsense")]
         public InviteTeamViewModel Nonsense()

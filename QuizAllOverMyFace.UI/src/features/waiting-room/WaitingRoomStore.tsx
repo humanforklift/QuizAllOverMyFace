@@ -6,20 +6,31 @@ import { GlobalStore } from "../shared/stores/GlobalStore"
 import FormErrorHandler from "../../shared-components/input-props/form-error-handler"
 import { snackbar } from "../../shared-components/material-ui-modals"
 import { quizClient } from "../../client/backendclientinstances";
-import { QuizViewModel } from "../../client/backendclient"
+import { QuizViewModel, Quiz } from "../../client/backendclient"
+
+interface WaitingRoomStoreParams {
+    globalStore: GlobalStore
+    guid?: string;
+}
 
 export class WaitingRoomStore {
-    constructor(globalStore: GlobalStore) {
-        this.globalStore = globalStore
+    constructor(sp: WaitingRoomStoreParams) {
+        this.sp = sp
     }
-    globalStore: GlobalStore
+
+    sp: WaitingRoomStoreParams
 
     @observable chuckFact = ""
+    @observable quiz = new Quiz()
 
     @action retrieveFact = async () => {
         this.chuckFact = await quizClient.getChuckNorrisFact()
     }
 
+    @action retrieveQuizFromDB = async () => {
+        this.quiz = await quizClient.getQuizById(this.sp.guid!)
+    }
+
 }
 
-export const RegisterStoreContext = createContext(new WaitingRoomStore(new GlobalStore()))
+export const WaitingRoomStoreContext = createContext(new WaitingRoomStore({ globalStore: new GlobalStore(), guid: ""}))

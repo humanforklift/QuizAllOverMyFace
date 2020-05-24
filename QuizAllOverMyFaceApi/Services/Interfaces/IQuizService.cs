@@ -8,6 +8,7 @@ namespace QuizAllOverMyFaceApi.Services.Interfaces
 {
     public interface IQuizService
     {
+        Task<Quiz> GetQuizById(string quizId);
         Task<Quiz> GetExistingQuiz(string quizName);
         Task<Quiz> CreateNewQuiz(QuizViewModel viewModel);
         Task<bool> ValidateQuizGuid(string guid);

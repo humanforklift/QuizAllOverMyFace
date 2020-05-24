@@ -8,6 +8,7 @@ import FormErrorHandler from "shared-components/input-props/form-error-handler";
 import { quizClient } from "client/backendclientinstances";
 import { QuizViewModel, QuizTeam, InviteTeamViewModel, TeamInviteRequest } from "client/backendclient";
 import { ObservableValue, IObservableFactory } from "mobx/lib/internal";
+import { snackbar } from "shared-components/material-ui-modals";
 
 class InviteTeam {
     @observable emailAddress: string = ''
@@ -55,6 +56,7 @@ export class InviteTeamsStore {
                         emailAddresses: this.inviteTeams.map(x => x.emailAddress)
                     })
                 const response = await quizClient.inviteTeams(teamInviteRequest)
+                snackbar({ title: "Invites successfully sent", variant: 'success', anchorOrigin: {vertical: 'top', horizontal: 'right'} })
                 this.invitedSuccessfully = true
             }
         } catch (error) {
