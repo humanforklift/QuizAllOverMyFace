@@ -19,7 +19,7 @@
     "file-saver": "^2.0.2",
     "install": "^0.13.0",
     "jest-junit": "^10.0.0",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.3.1",
     "jspdf-autotable": "^3.4.3",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
